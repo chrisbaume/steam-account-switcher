@@ -38,7 +38,7 @@ try {
 
             if ($shutdown -eq "true") {
                 Write-Host "Shutting down computer"
-                Start-Process "C:\Windows\System32\shutdown.exe"
+                Stop-Computer -ComputerName localhost
                 $html += "<h1>Success</h1><p>Shutting down computer</p>"
             } elseif ($username) {
                 Write-Host "Switching to user: $username"
