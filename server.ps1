@@ -34,7 +34,7 @@ try {
             $html = "<!DOCTYPE html><html><head>"
             $html += "<title>Steam account switcher</title>"
             $html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
-            $html += "</head><body>"
+            $html += "</head><body style='font-size: 24px'>"
 
             if ($shutdown -eq "true") {
                 Write-Host "Shutting down computer"
@@ -44,14 +44,14 @@ try {
                 Write-Host "Switching to user: $username"
 
                 Start-Process "C:\Program Files (x86)\Steam\steam.exe" -ArgumentList "-shutdown"
-                Start-Sleep -Seconds 10
+                Start-Sleep -Seconds 5
                 Start-Process "C:\Program Files (x86)\Steam\steam.exe" -ArgumentList "-login $username"
 
                 $html += "<h1>Success</h1><p>Switching to $username</p><a href='/'>Back</a>"
             } else {
                 $html += "<h1>Select a user</h1><ul>"
                 foreach ($user in $userList) {
-                    $html += "<li><a href='/?username=$user'>$user</a><br /></li>"
+                    $html += "<li style='margin-top: 12px'><a href='/?username=$user'>$user</a><br /></li>"
                 }
                 $html += "</ul><hr><ul><li><a href='/?shutdown=true'>Shutdown</a></li></ul>"
             }
