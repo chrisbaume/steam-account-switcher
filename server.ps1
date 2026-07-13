@@ -15,6 +15,25 @@ if ($global:listener) {
     }
 }
 
+# Define error handler
+function Write-ErrorToLog {
+    param(
+        [Exception]$Exception
+    )
+     
+    $ErrorDetails = @{
+        Timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+        ScriptName = $MyInvocation.ScriptName
+        LineNumber = $MyInvocation.ScriptLineNumber
+        ErrorMessage = $Exception.Message
+        StackTrace = $Exception.StackTrace
+    }
+     
+    $LogMessage = $ErrorDetails | ConvertTo-Json
+    Add-Content -Path "$MyInvocation.PSScriptRoot\errors.log" -Value $LogMessage
+    Write-Error $LogMessage
+}
+
 $global:listener = New-Object System.Net.HttpListener
 $global:listener.Prefixes.Add("http://+:$port/")
 
@@ -67,13 +86,13 @@ try {
             if (-not $global:listener.IsListening) {
                 Write-Host "Listener was stopped."
             } else {
-                Write-Error $_.Exception.Message
+                Write-ErrorToLog -Message $_.Exception.Message
             }
         }
     }
 }
 catch {
-    Write-Error $_
+    Write-ErrorToLog -Message $_.Exception.Message
 }
 finally {
     if ($global:listener) {
